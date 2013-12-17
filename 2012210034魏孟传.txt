@@ -1,0 +1,278 @@
+作为一个刚从C#转到Python的FreshMan，一周来的总体感觉就是：Python的确易学、易用、强大。
+像我这样的非计算机专业毕业、非程序员工作的人，一星期就已经入门Python，并且能用它写出
+自己“用着方便、看着舒服”的程序。很符合我学Python的预期：提高自己的工作效率；也印证了
+Bruce Eckel的观点：“Python可能是唯一一种旨在帮助程序员把事情弄得更加简单的语言”
+
+
+
+1.简易银行ATM存取款系统 
+ID = 999
+PASSWORD = 111
+MONEY = 10000
+ID_ZHUAN = 123
+IS_GOON = 0
+WRONGTIME = 0
+print("欢迎使用幻蓝ATM存取款一体机。")
+while (IS_GOON == 0) :
+    if WRONGTIME > 0 :
+        print("输入错误，请重新输入。")
+    print("请输入您的卡号：")
+    id = int(input())
+    print("请输入您的密码：")
+    password = int(input())
+    if id == ID and password == PASSWORD :
+        IS_GOON = 1
+    else :
+        WRONGTIME += 1
+        if WRONGTIME > 2 :
+            print("您密码输入错误次数已超过3次，感谢您的使用。")
+            break
+print("---------------------------------------")
+while IS_GOON == 1 :
+    print("请选择您需要操作的项目：")
+    print("1.存款")
+    print("2.取款")
+    print("3.转账")
+    print("4.查看余额")
+    print("5.修改密码")
+    print("---------------------------------------")
+    num_caozuo = int(input())
+    if num_caozuo == 1 :
+        print("请输入您要存入的金额：")
+        money = int(input())
+        MONEY = MONEY + money
+        print("存款成功。")
+        print("您当前的余额为：",MONEY)
+    elif num_caozuo == 2 :
+        print("请输入您要取出的金额：")
+        money = int(input())
+        if money < MONEY :
+            MONEY = MONEY - money
+            print("取款成功。")
+            print("您当前的余额为：",MONEY)
+        else :
+            print("取款失败，账户余额不足。")
+    elif num_caozuo == 3 :
+        print("请输入您要转入的账户ID：")
+        id_zhuan = int(input())
+        if id_zhuan == ID_ZHUAN :
+            print("请输入您要转出的金额：")
+            money = int(input())
+            if money < MONEY :
+                print("转账成功。")
+            else :
+                print("帐户余额不足。")
+        else :
+            print("您想转入的账号不存在。")
+    elif num_caozuo == 4 :
+        print("您当前的余额为：",MONEY)
+    elif num_caozuo == 5 :
+        print("请输入您的原密码：")
+        password = int(input())
+        if password == PASSWORD :
+            print("请输入您的新密码：")
+            password_new1 = int(input())
+            print("请再次输入您的新密码：")
+            password_new2 = int(input())
+            if password_new1 != password_new2 :
+                print("两次密码输入不一致，取消修改。")
+            else :
+                PASSWORD = password_new1
+                print("修改成功。")
+        else :
+            print("当前密码输入错误，取消修改。")
+    print("---------------------------------------")
+    print("是否还需要进行其他操作：（是请输入1，否请输入2）")
+    is_goon = int(input())
+    if is_goon == IS_GOON :
+        continue
+    else :
+        print("感谢您的使用，再见。")
+
+
+
+
+
+
+2.python写的掷骰子小游戏
+#!/usr/bin/python
+#coding:utf8
+
+import random
+import time
+
+def get_dice():
+    return random.randint(1,7)
+
+def the_open(player_dice,computer_dice):
+    print '双方开：'
+    time.sleep(1)
+    print '玩家：' + str(player_dice)
+    time.sleep(1)
+    print '电脑：' + str(computer_dice)
+    time.sleep(1)
+
+def every_game(player_money,computer_money):
+    print 'Get Ready~~~'
+    time.sleep(1)
+    print 'Go!'
+    time.sleep(2)
+    print "双方筹码："
+    print '玩家：' + str(player_money)
+    print '电脑：' + str(computer_money)
+    time.sleep(2)
+    print '玩家掷点：',
+    time.sleep(1)
+    player_dice = get_dice()
+    print '您得到的点数为' + str(player_dice)
+    time.sleep(2)
+    print '电脑掷点：',
+    time.sleep(1)
+    computer_dice = get_dice()
+    print '电脑掷点完毕！'
+    time.sleep(1)
+    result = raw_input('玩家方先下注，是否下注？[y/N]')
+    if result.lower() == 'y':
+        while True:
+            player_bets = input('选择下注范围：[1-{0}]'.format(player_money))
+            if player_bets >= 1 and player_bets <= player_money:
+                break
+        print '玩家下注{0}'.format(player_bets)
+        time.sleep(1)
+        print '电脑思考中...',
+        time.sleep(2)
+        if random.choice('yn') == str('y'):
+            computer_bets = random.randint(1,computer_money)
+            print '电脑下注{0}'.format(computer_bets)
+            time.sleep(1)
+            the_open(player_dice,computer_dice)
+            if player_dice > computer_dice:
+                print '玩家胜！玩家赢得筹码{0}'.format(computer_bets)
+                player_money += computer_bets
+                computer_money -= computer_bets
+            elif player_dice == computer_dice:
+                print '平局！双方收回各自筹码！'
+            else:
+                print '电脑胜！玩家输掉筹码{0}'.format(player_bets)
+                player_money -= player_bets
+                computer_money += player_bets
+        else:
+            print '电脑放弃下注！玩家收回自己的筹码！'
+            time.sleep(1)
+            the_open(player_dice,computer_dice)
+    else:
+        print '玩家放弃下注，本局放弃！'
+        time.sleep(1)
+        the_open(player_dice,computer_dice)
+    return [player_money,computer_money]
+
+def play_game():
+    print '游戏开始！'
+    player_money = 100
+    computer_money = 100
+    time.sleep(1)
+    while player_money != 0 and computer_money != 0:
+        money_list = every_game(player_money,computer_money)
+        player_money = money_list[0]
+        computer_money = money_list[1]
+    if player_money == 0:
+        print 'You Lose!'
+    else:
+        print 'You Win!'
+
+if __name__ == '__main__':
+　　play_game()
+　　
+
+3.python 微信自定义菜单的管理
+# -*- coding: utf-8 -*-
+'''
+Created on 2013年10月28日
+
+@author: 坏坏的忧伤
+'''
+import urllib.request
+import json
+
+
+class MenuManager:
+    accessUrl = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=appid&secret=secret"
+    delMenuUrl = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="
+    createUrl = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="
+    getMenuUri="https://api.weixin.qq.com/cgi-bin/menu/get?access_token="
+    def getAccessToken(self):
+        f = urllib.request.urlopen(self.accessUrl)
+        accessT = f.read().decode("utf-8")
+        jsonT = json.loads(accessT)
+        return jsonT["access_token"]
+    def delMenu(self, accessToken):
+        html = urllib.request.urlopen(self.delMenuUrl + accessToken)
+        result = json.loads(html.read().decode("utf-8"))
+        return result["errcode"]
+    def createMenu(self, accessToken):
+        menu = '''{
+                 "button":[
+                     {    
+          "type":"click",
+          "name":"今日歌曲",
+          "key":"V1001_TODAY_MUSIC"
+      },
+      {
+           "type":"view",
+           "name":"歌手简介",
+           "url":"http://www.qq.com/"
+      },
+      {
+           "name":"菜单",
+           "sub_button":[
+            {"type":"click","name":"hello word","key":"V1001_HELLO_WORLD"},{"type":"click","name":"赞一下我们","key":"V1001_GOOD"}]}]}'''
+        html = urllib.request.urlopen(self.createUrl + accessToken, menu.encode("utf-8"))
+        result = json.loads(html.read().decode("utf-8"))
+        return result["errcode"]
+    def getMenu(self):
+        html = urllib.request.urlopen(self.getMenuUri + accessToken)
+        print(html.read().decode("utf-8"))
+    
+
+if __name__ == "__main__":
+    wx = MenuManager()
+    accessToken = wx.getAccessToken()
+    #print(wx.delMenu(accessToken))   #删除菜单
+    #print(wx.createMenu(accessToken))  #创建菜单
+    wx.getMenu()
+        
+在python中，对象分为可变类型和不可变类型。这里的可变和不可变指的是对象在被创建是否能进行值更新操作。废话少说，直接上代码
+x=1
+print id(x)
+x+=1
+print id(x)
+y='s'
+print id(y)
+y+='s'
+print id(y)
+代码执行后发现，x和y在执行更新操作后输出地id前后不一致，即对象发生了变化。
+实际上发生的是：更新操作导致创建了新对象，新对象关联到原来的变量名，旧的对象被丢弃，
+垃圾回收器会在适当时回收被丢弃的对象。对于这种更新导致产生新对象的类型就属于“不可变型”。
+相反，“可变型”对象进行更新后，不会导致创建新对象，而是自身的值发生变化。
+x=[1,2,4]
+print id(x)
+x[1]=[5]
+print id(x)
+代码执行后，列表x的id前后一致，但是值更新成功，说明是x对象本身的值发生变化，而不是创建了新的对象。
+在python中，可变类型和不可变类型总结如下
+
+ 
+
+分类
+
+python类型
+
+可变类型
+
+列表、字典
+
+不可变类型
+
+数字、字符串、元组
+
+
